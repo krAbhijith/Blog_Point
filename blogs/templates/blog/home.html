@@ -2,11 +2,15 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="Assets/favicon.png" type="image/x-icon">
-    <title>Blog Point</title><head>
+    <title>Blog Point</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="Assets/favicon.png" type="image/x-icon">
@@ -18,7 +22,7 @@
                 --tertiary: #495E57;
                 --darkest: #45474B;
             }
-    
+
             body {
                 background-color: var(--primary);
                 padding: 0;
@@ -26,7 +30,7 @@
                 display: flex;
                 justify-content: center;
             }
-    
+
             nav {
                 position: fixed;
                 top: 0;
@@ -39,35 +43,35 @@
                 align-items: center;
                 z-index: 100;
             }
-    
+
             nav>.left {
                 display: flex;
                 margin-left: 6rem;
                 align-items: center;
                 justify-content: space-between;
             }
-    
+
             .circle-avatar {
                 width: 56px;
                 height: 56px;
                 border-radius: 28px;
                 align-self: center;
             }
-    
+
             .user-title {
                 font-size: 24px;
                 margin-left: 12px;
                 color: white;
                 text-transform: uppercase;
             }
-    
+
             .nav-icon {
                 width: 32px;
                 margin-right: 4rem;
                 cursor: pointer;
             }
-    
-            .div-notifications{
+
+            .div-notifications {
                 display: none;
                 position: absolute;
                 z-index: 200;
@@ -77,17 +81,18 @@
                 background-color: #45474b7e;
                 border-radius: 4px;
             }
-            .notification{
+
+            .notification {
                 padding: 2px 0;
                 border-bottom: 1px solid white;
                 margin-bottom: 8px;
             }
-    
+
             section {
                 margin-top: 7rem;
                 padding-inline: 18rem;
             }
-    
+
             .card {
                 width: 48rem;
                 position: relative;
@@ -96,49 +101,49 @@
                 border-radius: 8px;
                 margin-bottom: 12px;
             }
-    
+
             .card-header {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 font-size: 18px;
             }
-    
+
             .card-header>.left {
                 display: flex;
                 align-items: center;
             }
-    
+
             .profile-img {
                 height: 32px;
                 margin-right: 12px;
             }
-    
+
             .card-title {
                 font: 24px bold;
                 margin: 8px 0px;
             }
-    
+
             .card-footer {
                 display: flex;
                 justify-content: space-between;
                 margin-top: 12px;
             }
-    
+
             .card-footer>.left>img {
                 margin-inline-end: 12px;
             }
-    
+
             .icon-btn {
                 cursor: pointer;
             }
-    
+
             .comment-section {
                 flex-direction: column;
                 margin-top: 24px;
                 display: none;
             }
-    
+
             .inp-comment {
                 width: 40%;
                 padding: 4px 8px;
@@ -146,7 +151,7 @@
                 border: 1px solid var(--darkest);
                 border-radius: 2px;
             }
-    
+
             .btn-comment {
                 background-color: var(--darkest);
                 color: var(--primary);
@@ -154,26 +159,26 @@
                 border: none;
                 border-radius: 2px;
             }
-    
+
             .comment-head {
                 display: flex;
                 align-items: center;
             }
-    
+
             .comment-box {
                 margin-inline: 12px;
             }
-    
+
             .comment-profile-img {
                 width: 24px;
                 height: 24px;
                 margin-right: 12px;
             }
-    
+
             .comment-body {
                 margin-inline: 12px;
             }
-    
+
             .options {
                 position: absolute;
                 flex-direction: column;
@@ -182,22 +187,22 @@
                 padding: 2px;
                 display: none;
             }
-    
+
             .options-item {
                 border: 1px solid var(--darkest);
                 padding: 4px;
                 border-radius: 4px;
             }
-    
+
             .options-item:hover {
                 background-color: #bda010;
             }
-    
+
             a {
                 text-decoration: none;
                 color: #000;
             }
-    
+
             .show-options {
                 display: flex;
                 position: absolute;
@@ -206,14 +211,14 @@
                 right: 48px;
                 padding: 2px;
             }
-    
-            .show-comment{
+
+            .show-comment {
                 display: block;
                 flex-direction: column;
                 margin-top: 24px;
             }
-    
-            .show-div-notifications{
+
+            .show-div-notifications {
                 display: block;
                 position: absolute;
                 z-index: 200;
@@ -223,16 +228,16 @@
                 background-color: #45474b7e;
                 border-radius: 4px;
             }
-    
+
             @media screen and (max-width: 800px) {
                 section {
                     padding: 0 3rem;
                 }
-    
+
                 nav>.left {
                     margin-left: 2rem;
                 }
-    
+
                 .nav-icon {
                     margin-right: 2rem;
                 }
@@ -247,7 +252,7 @@
             <p class="user-title">Abhijith</p>
         </div>
         <div class="right">
-            <a href="{% url "create-blog" %}"><img src="{% static 'images/add.png' %}" alt="add" class="nav-icon"></a>
+            <a href="{% url 'blog-create' %}"><img src="{% static 'images/add.png' %}" alt="add" class="nav-icon"></a>
             <img src="{% static 'images/chat.png' %}" alt="add" class="nav-icon" id="btn-notification">
         </div>
         <div class="div-notifications" id="div-notifications">
@@ -290,8 +295,9 @@
             </div>
             <div class="card-footer">
                 <div class="left">
-                    <a href="{% url "blog-Like" pk=blog.pk %}"><img src="{% static 'images/thumbs-up.png' %}" alt="like" class="icon-btn"></a>
-                    <img src="{% static "images/comment.png" %}" alt="comment" class="icon-btn comment-toggle" id="comment-btn">
+                    <img src="{% static 'images/thumbs-up.png' %}" alt="like" class="icon-btn like-button" data-blog-id="{{ blog.pk }}">
+                    <img src="{% static "images/comment.png" %}" alt="comment" class="icon-btn comment-toggle"
+                        id="comment-btn">
                 </div>
                 <div>Posted on &nbsp; {{blog.date_posted}}</div>
             </div>
@@ -346,6 +352,25 @@
         notificationBtn.addEventListener('click', () => {
             notificationDiv.classList.toggle('show-div-notifications')
         })
+
+        $(document).ready(function () {
+            $('.like-button').click(function (e) {
+                e.preventDefault();
+                var blogId = $(this).data('blog-id');
+                $.ajax({
+                    type: 'GET',
+                    url: '{% url "blog-Like"%}',
+                    data: { blog_id: blogId},
+                    {% comment %} success: function (data) {
+                        alert('Blog liked!');
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Error liking blog: ' + error);
+                    } {% endcomment %}
+                });
+            });
+        });
+
     </script>
 </body>
 

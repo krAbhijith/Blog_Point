@@ -1,10 +1,12 @@
 from datetime import date
 from typing import Any
+from django.forms import BaseModelForm
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views import View
-from django.views.generic import ListView, RedirectView
+from django.views.generic import ListView, RedirectView, CreateView
 from .models import Blog, Like, Comment
 
 class Home(ListView):
@@ -15,23 +17,34 @@ class Home(ListView):
     def get_queryset(self):
         return Blog.objects.filter(is_archived = False).order_by('-pk')
     
-class BlogCreateView(View):
-    model = Blog
-    context_object_name = 'blog'
-    template_name = 'blog/blog.html'
+# class BlogCreateView(View):
+#     model = Blog
+#     context_object_name = 'blog'
+#     template_name = 'blog/blog.html'
 
-    def get(self, request):
-        return render(request, self.template_name)
+#     def get(self, request):
+#         return render(request, self.template_name)
     
-    def post(self, request):
-        title = request.POST.get('title')
-        desc = request.POST.get('desc')
-        user = request.user
-        today = date.today()
-        #print(title, desc, user, today)
-        Blog.objects.create(title=title, desc=desc, owner=user, date_posted=today)
-        return redirect('home')
-    
+#     def post(self, request):
+#         title = request.POST.get('title')
+#         desc = request.POST.get('desc')
+#         user = request.user
+#         today = date.today()
+#         #print(title, desc, user, today)
+#         Blog.objects.create(title=title, desc=desc, owner=user, date_posted=today)
+#         return redirect('home')
+
+
+class BlogCreateView(CreateView):
+    model = Blog
+    fields = ['title', 'desc']
+    template_name = 'blog/blog.html'
+    success_url = reverse_lazy('home')
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        form.instance.date_posted = date.today()
+        return super().form_valid(form)    
     
 
 class BlogUpdateView(View):
@@ -82,9 +95,9 @@ class BlogArchiveView(RedirectView):
         blog.save()
         return reverse(self.pattern_name)
     
-class BlogLike(View):
+class BlogLikeView(View):
     def get(self, request, **kwargs):
-        pk = self.kwargs.get('pk')
+        pk = self.request.GET.get('blog_id')
         blog = get_object_or_404(Blog, pk=pk)
         user = request.user
         today = date.today()
@@ -93,7 +106,26 @@ class BlogLike(View):
         else:
             Like.objects.create(date_liked = today, user = user, blog = blog)
         return redirect('home')
-    
+
+
+# class BlogLikeView(CreateView):
+#     model = Like
+#     fields = []
+
+#     def form_valid(self, form):
+#         blog_id = self.request.POST.get('blog_id')
+#         blog = get_object_or_404(Blog, pk=blog_id)
+#         user = self.request.user
+#         if(Like.objects.filter(blog=blog, user=user)):
+#             Like.objects.filter(blog=blog, user=user).delete()
+#         else:
+#             form.instance.blog = blog
+#             form.instance.user = self.request.user
+#             form.instance.date_liked = date.today()
+#         return super().form_valid(form)
+#     def get_success_url(self) -> str:
+#         return reverse('home')
+
 class BlogComment(View):
 
     def post(self, request, **kwargs):
