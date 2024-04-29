@@ -1,10 +1,10 @@
 from datetime import date
+from typing import Any
 from django.shortcuts import redirect, render
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from django.urls import reverse_lazy
+from django.urls import reverse
 from django.views import View
-from django.views.generic import ListView, DeleteView
+from django.views.generic import ListView, RedirectView
 from .models import Blog, Like, Comment
 
 class Home(ListView):
@@ -54,23 +54,33 @@ class BlogUpdateView(View):
         blog.save()
         return redirect('home')
 
-class BlogDeleteView(View):
-    model : Blog
+class BlogDeleteView(RedirectView):
+    query_string = False
+    pattern_name = 'home'
 
-    def get(self, request, **kwargs):
+    def get_redirect_url(self, *args, **kwargs):
         pk = self.kwargs.get('pk')
         blog = get_object_or_404(Blog, pk=pk)
         blog.delete()
-        return redirect('home')
+        return reverse(self.pattern_name)
 
-class BlogArchiveView(View):
 
-    def get(self, request, **kwargs):
+    # def get(self, request, **kwargs):
+    #     pk = self.kwargs.get('pk')
+    #     blog = get_object_or_404(Blog, pk=pk)
+    #     blog.delete()
+    #     return redirect('home')
+
+class BlogArchiveView(RedirectView):
+    query_string = False
+    pattern_name = 'home'
+
+    def get_redirect_url(self, *args: Any, **kwargs: Any) -> str | None:
         pk = self.kwargs.get('pk')
         blog = get_object_or_404(Blog, pk=pk)
         blog.is_archived = True
         blog.save()
-        return redirect('home')
+        return reverse(self.pattern_name)
     
 class BlogLike(View):
     def get(self, request, **kwargs):
