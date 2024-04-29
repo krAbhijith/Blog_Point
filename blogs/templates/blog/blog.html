@@ -1,0 +1,132 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="Assets/favicon.png" type="image/x-icon">
+    <title>Blog Point</title>
+    <style>
+        :root {
+            --primary: #F5F7F8;
+            --secondary: #F4CE14;
+            --tertiary: #495E57;
+            --darkest: #45474B;
+        }
+
+        body {
+            background-color: var(--primary);
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5rem;
+            background-color: var(--tertiary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav>.left {
+            display: flex;
+            margin-left: 6rem;
+            justify-content: space-between;
+        }
+
+        .circle-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 28px;
+            align-self: center;
+        }
+
+        .user-title {
+            align-self: center;
+            text-decoration: none;
+            font-size: 24px;
+            margin-left: 12px;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        .btn-post {
+            border: none;
+            background-color: var(--secondary);
+            padding: 6px 12px;
+            border-radius: 4px;
+            color: var(--darkest);
+            text-decoration: none;
+            font-size: large;
+            font-weight: bold;
+            margin-right: 2rem;
+            transition: all .12s ease;
+            align-self: flex-end;
+            transition: all .12s ease;
+        }
+
+        .btn-post:hover {
+            scale: 1.02;
+        }
+
+        form {
+            margin-top: 8rem;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--tertiary);
+            padding: 2rem;
+            width: 40%;
+            gap: 2rem;
+        }
+
+        .inp-title {
+            padding: 12px 0;
+        }
+
+        .inp {
+            align-self: flex-start;
+            width: 100%;
+            padding-left: 8px;
+        }
+
+        #blog-body {
+            resize: none;
+            height: 18rem;
+        }
+
+        textarea {
+            resize: none;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="left">
+            <a href="{% url 'home' %}"><img src="{% static 'images/man.png' %}" alt="avatar" class="circle-avatar"></a>
+            <a href="#" class="user-title">{{request.user}}</a>
+        </div>
+    </nav>
+
+    <form method="POST">
+        {% csrf_token %}
+        {% if blog %}
+            <input type="text" name="title" class="inp inp-title" placeholder="Blog Title" value="{{blog.title}}">
+            <textarea name="desc" cols="30" rows="10" class="inp" placeholder="Write your Blog">{{blog.desc}}</textarea>
+            <button type="submit" class="btn-post">Post</button>
+        {% else %}
+            <input type="text" name="title" class="inp inp-title" placeholder="Blog Title">
+            <textarea name="desc" cols="30" rows="10" class="inp" placeholder="Write your Blog"></textarea>
+            <button type="submit" class="btn-post">Post</button>
+        {% endif %}
+    </form>
+</body>
+
+</html>

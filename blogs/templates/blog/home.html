@@ -1,0 +1,352 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="Assets/favicon.png" type="image/x-icon">
+    <title>Blog Point</title><head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="Assets/favicon.png" type="image/x-icon">
+        <title>Blog Point</title>
+        <style>
+            :root {
+                --primary: #F5F7F8;
+                --secondary: #F4CE14;
+                --tertiary: #495E57;
+                --darkest: #45474B;
+            }
+    
+            body {
+                background-color: var(--primary);
+                padding: 0;
+                margin: 0;
+                display: flex;
+                justify-content: center;
+            }
+    
+            nav {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 5rem;
+                background-color: var(--tertiary);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                z-index: 100;
+            }
+    
+            nav>.left {
+                display: flex;
+                margin-left: 6rem;
+                align-items: center;
+                justify-content: space-between;
+            }
+    
+            .circle-avatar {
+                width: 56px;
+                height: 56px;
+                border-radius: 28px;
+                align-self: center;
+            }
+    
+            .user-title {
+                font-size: 24px;
+                margin-left: 12px;
+                color: white;
+                text-transform: uppercase;
+            }
+    
+            .nav-icon {
+                width: 32px;
+                margin-right: 4rem;
+                cursor: pointer;
+            }
+    
+            .div-notifications{
+                display: none;
+                position: absolute;
+                z-index: 200;
+                right: 2px;
+                padding: 2rem;
+                top: 6rem;
+                background-color: #45474b7e;
+                border-radius: 4px;
+            }
+            .notification{
+                padding: 2px 0;
+                border-bottom: 1px solid white;
+                margin-bottom: 8px;
+            }
+    
+            section {
+                margin-top: 7rem;
+                padding-inline: 18rem;
+            }
+    
+            .card {
+                width: 48rem;
+                position: relative;
+                background: #f5d015a6;
+                padding: 24px;
+                border-radius: 8px;
+                margin-bottom: 12px;
+            }
+    
+            .card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-size: 18px;
+            }
+    
+            .card-header>.left {
+                display: flex;
+                align-items: center;
+            }
+    
+            .profile-img {
+                height: 32px;
+                margin-right: 12px;
+            }
+    
+            .card-title {
+                font: 24px bold;
+                margin: 8px 0px;
+            }
+    
+            .card-footer {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 12px;
+            }
+    
+            .card-footer>.left>img {
+                margin-inline-end: 12px;
+            }
+    
+            .icon-btn {
+                cursor: pointer;
+            }
+    
+            .comment-section {
+                flex-direction: column;
+                margin-top: 24px;
+                display: none;
+            }
+    
+            .inp-comment {
+                width: 40%;
+                padding: 4px 8px;
+                background-color: #f5f7f8b0;
+                border: 1px solid var(--darkest);
+                border-radius: 2px;
+            }
+    
+            .btn-comment {
+                background-color: var(--darkest);
+                color: var(--primary);
+                padding: 5px 8px;
+                border: none;
+                border-radius: 2px;
+            }
+    
+            .comment-head {
+                display: flex;
+                align-items: center;
+            }
+    
+            .comment-box {
+                margin-inline: 12px;
+            }
+    
+            .comment-profile-img {
+                width: 24px;
+                height: 24px;
+                margin-right: 12px;
+            }
+    
+            .comment-body {
+                margin-inline: 12px;
+            }
+    
+            .options {
+                position: absolute;
+                flex-direction: column;
+                top: 24px;
+                right: 48px;
+                padding: 2px;
+                display: none;
+            }
+    
+            .options-item {
+                border: 1px solid var(--darkest);
+                padding: 4px;
+                border-radius: 4px;
+            }
+    
+            .options-item:hover {
+                background-color: #bda010;
+            }
+    
+            a {
+                text-decoration: none;
+                color: #000;
+            }
+    
+            .show-options {
+                display: flex;
+                position: absolute;
+                flex-direction: column;
+                top: 24px;
+                right: 48px;
+                padding: 2px;
+            }
+    
+            .show-comment{
+                display: block;
+                flex-direction: column;
+                margin-top: 24px;
+            }
+    
+            .show-div-notifications{
+                display: block;
+                position: absolute;
+                z-index: 200;
+                right: 2px;
+                padding: 2rem;
+                top: 6rem;
+                background-color: #45474b7e;
+                border-radius: 4px;
+            }
+    
+            @media screen and (max-width: 800px) {
+                section {
+                    padding: 0 3rem;
+                }
+    
+                nav>.left {
+                    margin-left: 2rem;
+                }
+    
+                .nav-icon {
+                    margin-right: 2rem;
+                }
+            }
+        </style>
+    </head>
+
+<body>
+    <nav>
+        <div class="left">
+            <img src="{% static "images/man.png" %}" alt="avatar" class="circle-avatar">
+            <p class="user-title">Abhijith</p>
+        </div>
+        <div class="right">
+            <a href="{% url "create-blog" %}"><img src="{% static 'images/add.png' %}" alt="add" class="nav-icon"></a>
+            <img src="{% static 'images/chat.png' %}" alt="add" class="nav-icon" id="btn-notification">
+        </div>
+        <div class="div-notifications" id="div-notifications">
+            <div class="notification">
+                steve job commented on your post
+            </div>
+            <div class="notification">
+                steve job liked on your post
+            </div>
+            <div class="notification">
+                steve job saved your post
+            </div>
+            <div class="notification">
+                steve job saved your post
+            </div>
+            <div class="notification">
+                steve job saved your post
+            </div>
+            <div class="notification">
+                steve job saved your post
+            </div>
+        </div>
+    </nav>
+    <section>
+        {% for blog in blogs %}
+
+        <div class="card">
+            <div class="card-header">
+                <div class="left">
+                    <img src="{% static "images/man.png" %}" alt="profile" class="profile-img">
+                    <p class="user-name">{{ blog.owner }}</p>
+                </div>
+                <div class="right">
+                    <img src="{% static "images/dots.png" %}" alt="menu" class="icon-btn opt-toggle" id="opt-btn">
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="card-title">{{blog.title}}</div>
+                <div class="card-desc">{{blog.desc}}</div>
+            </div>
+            <div class="card-footer">
+                <div class="left">
+                    <a href="{% url "blog-Like" pk=blog.pk %}"><img src="{% static 'images/thumbs-up.png' %}" alt="like" class="icon-btn"></a>
+                    <img src="{% static "images/comment.png" %}" alt="comment" class="icon-btn comment-toggle" id="comment-btn">
+                </div>
+                <div>Posted on &nbsp; {{blog.date_posted}}</div>
+            </div>
+            <div class="comment-section" id="div-comment">
+                <form class="commment-text">
+                    <input type="text" name="inp-comment" id="inp-comment" class="inp-comment">
+                    <button type="submit" class="btn-comment">Post</button>
+                </form>
+                <div class="comment-box">
+                    <div class="comment">
+                        <div class="comment-head">
+                            <img src="{% static "images/man.png" %}" alt="profile" class="comment-profile-img">
+                            <h4 class="user-name">Abhijith</h4>
+                        </div>
+                        <div class="comment-body">
+                            <div class="comment-text">This is a sample comment</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="options" id="div-options">
+                <a href="{% url "blog-update" pk=blog.pk %}" class="edit options-item">Edit</a>
+                <a href="{% url "blog-archive" pk=blog.pk %}" class="archive options-item">Archive</a>
+                <a href="{% url "blog-delete" pk=blog.pk %}" class="delete options-item">Delete</a>
+            </div>
+        </div>
+        {% endfor %}
+
+    </section>
+    <script>
+        var optionsBtns = document.querySelectorAll('.opt-toggle')
+        var commentBtns = document.querySelectorAll('.comment-toggle')
+        var optionsMenus = document.querySelectorAll('.options')
+        var commentBoxes = document.querySelectorAll('.comment-section')
+        var notificationBtn = document.getElementById('btn-notification')
+        var notificationDiv = document.getElementById('div-notifications')
+
+        optionsBtns.forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                optionsMenus[index].classList.toggle('show-options');
+            })
+        })
+
+
+        commentBtns.forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                commentBoxes[index].classList.toggle('show-comment');
+            })
+        })
+
+
+        notificationBtn.addEventListener('click', () => {
+            notificationDiv.classList.toggle('show-div-notifications')
+        })
+    </script>
+</body>
+
+</html>
