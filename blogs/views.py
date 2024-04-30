@@ -6,14 +6,18 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import ListView, RedirectView, CreateView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Blog, Like, Comment
 
 
 
-class Home(ListView):
+class Home(LoginRequiredMixin, ListView):
     model : Blog
     template_name = 'blog/home.html'
     context_object_name = 'blogs'
+
+    login_url = 'register-account'
+    redirect_field_name = 'redirected_to'
 
     def get_queryset(self):
         return Blog.objects.filter(is_archived = False).order_by('-pk')

@@ -136,6 +136,7 @@
 
             .icon-btn {
                 cursor: pointer;
+                padding-inline: 4px;
             }
 
             .comment-section {
@@ -186,16 +187,6 @@
                 right: 48px;
                 padding: 2px;
                 display: none;
-            }
-
-            .options-item {
-                border: 1px solid var(--darkest);
-                padding: 4px;
-                border-radius: 4px;
-            }
-
-            .options-item:hover {
-                background-color: #bda010;
             }
 
             a {
@@ -278,71 +269,109 @@
     </nav>
     <section>
         {% for blog in blogs %}
-
-        <div class="card">
-            <div class="card-header">
-                <div class="left">
-                    <img src="{% static "images/man.png" %}" alt="profile" class="profile-img">
-                    <p class="user-name">{{ blog.owner.first_name }}</p>
+            {% if blog.owner == request.user %}
+                <div class="card">
+                    <div class="card-header">
+                        <div class="left">
+                            <img src="{% static "images/man.png" %}" alt="profile" class="profile-img">
+                            <p class="user-name">{{ blog.owner.first_name }}</p>
+                        </div>
+                        <div class="right">
+                            <a href="{% url "blog-update" pk=blog.pk %}" class="edit"><img src="{% static "images/editing.png" %}" alt="menu" class="icon-btn" id="opt-btn"></a>
+                            <a href="{% url "blog-archive" pk=blog.pk %}" class="archive"><img src="{% static "images/archive.png" %}" alt="menu" class="icon-btn" id="opt-btn"></a>
+                            <a href="{% url "blog-delete" pk=blog.pk %}" class="delete"><img src="{% static "images/bin.png" %}" alt="menu" class="icon-btn" id="opt-btn"></a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-title">{{blog.title}}</div>
+                        <div class="card-desc">{{blog.desc}}</div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="left">
+                            <img src="{% static 'images/thumbs-up.png' %}" alt="like" class="icon-btn like-button" data-blog-id="{{ blog.pk }}">
+                            <img src="{% static "images/comment.png" %}" alt="comment" class="icon-btn comment-toggle" id="comment-btn">
+                        </div>
+                        <div>Posted on &nbsp; {{blog.date_posted}}</div>
+                    </div>
+                    <div class="comment-section" id="div-comment">
+                        <div class="commment-text comment-form" id="comment-form">
+                            <input type="text" name="comment" id="inp-comment-{{ blog.pk }}" class="inp-comment" >
+                            <button type="button" class="btn-comment btn-comment-post" data-blog-id="{{ blog.pk }}">Post</button>
+                        </div>
+                        <div class="comment-box" id="comment-box-{{ blog.pk }}">
+                            {% for comment in comments_dict %}
+                                {% if comment.blog.pk == blog.pk  %}
+                                    <div class="comment">
+                                        <div class="comment-head">
+                                            <img src="{% static "images/man.png" %}" alt="profile" class="comment-profile-img">
+                                            <h4 class="user-name">{{ comment.user.first_name }}</h4>
+                                        </div>
+                                        <div class="comment-body">
+                                            <div class="comment-text">{{ comment.comment }}</div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="options" id="div-options">
+                        <a href="{% url "blog-update" pk=blog.pk %}" class="edit options-item">Edit</a>
+                        
+                    </div>
                 </div>
-                <div class="right">
-                    <img src="{% static "images/dots.png" %}" alt="menu" class="icon-btn opt-toggle" id="opt-btn">
+            {% else %}
+                <div class="card">
+                    <div class="card-header">
+                        <div class="left">
+                            <img src="{% static "images/man.png" %}" alt="profile" class="profile-img">
+                            <p class="user-name">{{ blog.owner.first_name }}</p>
+                        </div>
+                        <div class="right">
+                            <img src="{% static "images/bookmark.png" %}" alt="menu" class="icon-btn" id="opt-btn">
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-title">{{blog.title}}</div>
+                        <div class="card-desc">{{blog.desc}}</div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="left">
+                            <img src="{% static 'images/thumbs-up.png' %}" alt="like" class="icon-btn like-button" data-blog-id="{{ blog.pk }}">
+                            <img src="{% static "images/comment.png" %}" alt="comment" class="icon-btn comment-toggle" id="comment-btn">
+                        </div>
+                        <div>Posted on &nbsp; {{blog.date_posted}}</div>
+                    </div>
+                    <div class="comment-section" id="div-comment">
+                        <div class="commment-text comment-form" id="comment-form">
+                            <input type="text" name="comment" id="inp-comment-{{ blog.pk }}" class="inp-comment" >
+                            <button type="button" class="btn-comment btn-comment-post" data-blog-id="{{ blog.pk }}">Post</button>
+                        </div>
+                        <div class="comment-box" id="comment-box-{{ blog.pk }}">
+                            {% for comment in comments_dict %}
+                                {% if comment.blog.pk == blog.pk  %}
+                                    <div class="comment">
+                                        <div class="comment-head">
+                                            <img src="{% static "images/man.png" %}" alt="profile" class="comment-profile-img">
+                                            <h4 class="user-name">{{ comment.user.first_name }}</h4>
+                                        </div>
+                                        <div class="comment-body">
+                                            <div class="comment-text">{{ comment.comment }}</div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="card-body">
-                <div class="card-title">{{blog.title}}</div>
-                <div class="card-desc">{{blog.desc}}</div>
-            </div>
-            <div class="card-footer">
-                <div class="left">
-                    <img src="{% static 'images/thumbs-up.png' %}" alt="like" class="icon-btn like-button" data-blog-id="{{ blog.pk }}">
-                    <img src="{% static "images/comment.png" %}" alt="comment" class="icon-btn comment-toggle" id="comment-btn">
-                </div>
-                <div>Posted on &nbsp; {{blog.date_posted}}</div>
-            </div>
-            <div class="comment-section" id="div-comment">
-                <div class="commment-text comment-form" id="comment-form">
-                    <input type="text" name="comment" id="inp-comment-{{ blog.pk }}" class="inp-comment" >
-                    <button type="button" class="btn-comment btn-comment-post" data-blog-id="{{ blog.pk }}">Post</button>
-                </div>
-                <div class="comment-box" id="comment-box-{{ blog.pk }}">
-                    {% for comment in comments_dict %}
-                        {% if comment.blog.pk == blog.pk  %}
-                            <div class="comment">
-                                <div class="comment-head">
-                                    <img src="{% static "images/man.png" %}" alt="profile" class="comment-profile-img">
-                                    <h4 class="user-name">{{ comment.user.first_name }}</h4>
-                                </div>
-                                <div class="comment-body">
-                                    <div class="comment-text">{{ comment.comment }}</div>
-                                </div>
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-            </div>
-            <div class="options" id="div-options">
-                <a href="{% url "blog-update" pk=blog.pk %}" class="edit options-item">Edit</a>
-                <a href="{% url "blog-archive" pk=blog.pk %}" class="archive options-item">Archive</a>
-                <a href="{% url "blog-delete" pk=blog.pk %}" class="delete options-item">Delete</a>
-            </div>
-        </div>
+            {% endif %}
         {% endfor %}
 
     </section>
     <script>
-        var optionsBtns = document.querySelectorAll('.opt-toggle')
         var commentBtns = document.querySelectorAll('.comment-toggle')
-        var optionsMenus = document.querySelectorAll('.options')
         var commentBoxes = document.querySelectorAll('.comment-section')
         var notificationBtn = document.getElementById('btn-notification')
         var notificationDiv = document.getElementById('div-notifications')
-
-        optionsBtns.forEach((btn, index) => {
-            btn.addEventListener('click', () => {
-                optionsMenus[index].classList.toggle('show-options');
-            })
-        })
 
 
         commentBtns.forEach((btn, index) => {
