@@ -4,7 +4,7 @@ from django.shortcuts import redirect, render
 from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views import View
-from django.views.generic import ListView, RedirectView, CreateView
+from django.views.generic import ListView, RedirectView, CreateView, UpdateView
 from .models import Blog, Like, Comment
 
 
@@ -47,25 +47,33 @@ class BlogCreateView(CreateView):
         return super().form_valid(form)    
     
 
-class BlogUpdateView(View):
+# class BlogUpdateView(View):
     
-    def get_queryset(self):
-        pk = self.kwargs.get('pk')
-        blog = get_object_or_404(Blog, pk=pk)
-        return blog
+#     def get_queryset(self):
+#         pk = self.kwargs.get('pk')
+#         blog = get_object_or_404(Blog, pk=pk)
+#         return blog
     
-    def get(self, request, **kwargs):
-        context = self.get_queryset()
-        return render(request, 'blog/blog.html', {'blog' : context})
+#     def get(self, request, **kwargs):
+#         context = self.get_queryset()
+#         return render(request, 'blog/blog.html', {'blog' : context})
     
-    def post(self, request, **kwargs):
-        blog = self.get_queryset()
-        title = request.POST.get('title')
-        desc = request.POST.get('desc')
-        blog.title = title
-        blog.desc = desc
-        blog.save()
-        return redirect('home')
+#     def post(self, request, **kwargs):
+#         blog = self.get_queryset()
+#         title = request.POST.get('title')
+#         desc = request.POST.get('desc')
+#         blog.title = title
+#         blog.desc = desc
+#         blog.save()
+#         return redirect('home')
+
+
+class BlogUpdateView(UpdateView):
+    model = Blog
+    template_name = "blog/blog.html"
+    fields = ['title', 'desc']
+    success_url = reverse_lazy('home')
+    #context_object_name = 'blog' default model name in lower case aayirikum
 
 
 
