@@ -111,7 +111,7 @@
     <nav>
         <div class="left">
             <a href="{% url 'home' %}"><img src="{% static 'images/man.png' %}" alt="avatar" class="circle-avatar"></a>
-            <a href="#" class="user-title">{{request.user}}</a>
+            <a href="#" class="user-title">{{request.user.first_name}}</a>
         </div>
     </nav>
 

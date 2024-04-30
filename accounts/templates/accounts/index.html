@@ -1,0 +1,184 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="Assets/favicon.png" type="image/x-icon">
+    <title>Blog Point</title>
+    <style>
+        :root {
+            --primary: #F5F7F8;
+            --secondary: #F4CE14;
+            --tertiary: #495E57;
+            --darkest: #45474B;
+        }
+
+        body {
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            background-color: var(--primary);
+            height: 100vh;
+        }
+
+        .left,
+        .right {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .right {
+            background-color: var(--tertiary);
+            color: var(--secondary);
+        }
+        #div-register{
+            display: none;
+        }
+
+        .form-head {
+            font-size: 24px;
+            font-weight: bolder;
+            margin-bottom: 2rem;
+        }
+        .inp-field {
+            width: 16rem;
+            padding: 12px 24px;
+            background-color: none;
+            outline: 2px solid var(--tertiary);
+            border: none;
+            border-radius: 4px;
+            transition: all .3s ease;
+        }
+        .inp-name{
+            width: 6.5rem;
+        }
+
+        .inp-field:focus {
+            outline: 2px solid var(--secondary);
+
+        }
+
+        .btn-submit {
+            align-self: center;
+            padding: 12px 48px;
+            border-radius: 4px;
+            background-color: var(--secondary);
+            border: none;
+            margin-bottom: 2rem;
+            margin-top: 1rem;
+            color: var(--tertiary);
+            font-weight: 1000;
+            transition: all .5s ease;
+        }
+
+        .btn-submit:hover {
+            background-color: #e0be14;
+        }
+
+        .footer-links > a  > span {
+            color: var(--secondary);
+        }
+        #div-login > .footer-links {
+            display: flex;
+            width: 100%;
+            justify-content: space-evenly;
+        }
+        #div-register > .footer-links {
+            display: flex;
+            width: 45%;
+            justify-content: flex-end;
+        }
+        
+
+        a {
+            text-decoration: none;
+            color: #e0be14;
+        }
+
+        .logo {
+            width: 24rem;
+            mix-blend-mode: multiply;
+        }
+
+        @media screen and (max-width: 800px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .logo {
+                width: 80%;
+                justify-self: center;
+                align-self: center;
+            }
+
+            .login {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="left">
+            <img src="{% static 'images/logo.png' %}" alt="" class="logo">
+        </div>
+        <form class="right" id="div-login" method="post">
+            {% csrf_token %}
+            <div class="form-head">LOGIN</div>
+            <input type="email" name="email" placeholder="Email" class="inp-field">
+            <input type="password" name="password" placeholder="Password" class="inp-field">
+            <input type="submit" value="Submit" class="btn-submit">
+            <div class="footer-links">
+                <a href="#">Forget Password ?</a>
+                <a href="" id="nav-register">Register</a>
+            </div>
+        </form>
+        <form class="right" id="div-register" method="post">
+            {% csrf_token %}
+            <div class="form-head">REGISTER</div>
+            <div>
+                <input type="text" name="first_name" id="first_name" class="inp-field inp-name" placeholder="First Name">
+                <input type="text" name="second_name" id="first_name" class="inp-field inp-name" placeholder="Second Name">
+            </div>
+            <input type="email" name="email" id="email" placeholder="Email" class="inp-field">
+            <input type="text" name="password" id="password" placeholder="Password" class="inp-field">
+            <input type="password" name="password2" placeholder="Confirm Password" class="inp-field">
+            <input type="submit" value="Submit" class="btn-submit">
+            <div class="footer-links">
+                <a href="" id="nav-login">Already have an account ? &nbsp;<span>Login</span></a>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    var registerBtn = document.getElementById('nav-register')
+    var loginBtn = document.getElementById('nav-login')
+    
+    var loginDiv = document.getElementById('div-login') 
+    var registerDiv = document.getElementById('div-register') 
+
+    registerBtn.addEventListener('click', (event)=>{
+        event.preventDefault();
+        loginDiv.style.display = 'none';
+        registerDiv.style.display = 'flex';
+    })
+    loginBtn.addEventListener('click', (event)=>{
+        event.preventDefault();
+        registerDiv.style.display = 'none';
+        loginDiv.style.display = 'flex';
+    })
+</script>
+</body>
+
+
+</html>

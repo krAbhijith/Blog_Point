@@ -249,7 +249,7 @@
     <nav>
         <div class="left">
             <img src="{% static "images/man.png" %}" alt="avatar" class="circle-avatar">
-            <p class="user-title">{{ request.user }}</p>
+            <p class="user-title">{{ request.user.first_name }}</p>
         </div>
         <div class="right">
             <a href="{% url 'blog-create' %}"><img src="{% static 'images/add.png' %}" alt="add" class="nav-icon"></a>
@@ -283,7 +283,7 @@
             <div class="card-header">
                 <div class="left">
                     <img src="{% static "images/man.png" %}" alt="profile" class="profile-img">
-                    <p class="user-name">{{ blog.owner }}</p>
+                    <p class="user-name">{{ blog.owner.first_name }}</p>
                 </div>
                 <div class="right">
                     <img src="{% static "images/dots.png" %}" alt="menu" class="icon-btn opt-toggle" id="opt-btn">
@@ -311,7 +311,7 @@
                             <div class="comment">
                                 <div class="comment-head">
                                     <img src="{% static "images/man.png" %}" alt="profile" class="comment-profile-img">
-                                    <h4 class="user-name">{{ comment.user }}</h4>
+                                    <h4 class="user-name">{{ comment.user.first_name }}</h4>
                                 </div>
                                 <div class="comment-body">
                                     <div class="comment-text">{{ comment.comment }}</div>
