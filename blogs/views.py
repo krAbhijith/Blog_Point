@@ -18,6 +18,12 @@ class Home(ListView):
     def get_queryset(self):
         return Blog.objects.filter(is_archived = False).order_by('-pk')
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        comments = Comment.objects.all()
+        context['comments_dict'] = comments  # Pass comments dictionary to the template
+        return context
+    
 # class BlogCreateView(View):
 #     model = Blog
 #     context_object_name = 'blog'

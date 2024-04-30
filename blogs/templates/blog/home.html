@@ -176,7 +176,7 @@
             }
 
             .comment-body {
-                margin-inline: 12px;
+                margin-left: 48px;
             }
 
             .options {
@@ -306,8 +306,18 @@
                     <button type="button" class="btn-comment btn-comment-post" data-blog-id="{{ blog.pk }}">Post</button>
                 </div>
                 <div class="comment-box" id="comment-box-{{ blog.pk }}">
-                    {% for  in  %}
-                    
+                    {% for comment in comments_dict %}
+                        {% if comment.blog.pk == blog.pk  %}
+                            <div class="comment">
+                                <div class="comment-head">
+                                    <img src="{% static "images/man.png" %}" alt="profile" class="comment-profile-img">
+                                    <h4 class="user-name">{{ comment.user }}</h4>
+                                </div>
+                                <div class="comment-body">
+                                    <div class="comment-text">{{ comment.comment }}</div>
+                                </div>
+                            </div>
+                        {% endif %}
                     {% endfor %}
                 </div>
             </div>
