@@ -75,6 +75,7 @@
             bottom: -4rem;
         }
         .menu-item{
+            display: block;
             border: 1px solid var(--darkest);
             padding: 4px 4px;
             cursor: pointer;
@@ -288,16 +289,16 @@
 <body>
     <nav>
         <div class="left">
-            <a href="home.html"><img src="{% static "images/man.png" %}" alt="avatar" class="circle-avatar"></a>
+            <a href="{% url 'home' %}"><img src="{% static "images/man.png" %}" alt="avatar" class="circle-avatar"></a>
             <p class="user-title">{{ request.user.first_name }}</p>
         </div>
         <div class="right">
-            <a href="#"><img src="{% static "images/logout.png" %}" alt="add" class="nav-icon"></a>
+            <a href="{% url "logout-account" %}"><img src="{% static "images/logout.png" %}" alt="add" class="nav-icon"></a>
             <img src="{% static "images/dot-menu.png" %}" alt="add" class="nav-icon" id="menu-btn">
         </div>
         <div class="menu" id="menu">
-            <div class="menu-item">Change Password</div>
-            <div class="menu-item">Delete Account</div>
+            <a class="menu-item">Change Password</a>
+            <a class="menu-item">Delete Account</a>
         </div>
     </nav>
     
@@ -323,7 +324,7 @@
                         </div>
                         <div class="right">
                             <a href="{% url "blog-update" pk=blog.pk %}" class="edit"><img src="{% static "images/editing.png" %}" alt="menu" class="icon-btn" id="opt-btn"></a>
-                            <a href="{% url "blog-archive" pk=blog.pk %}" class="archive"><img src="{% static "images/archive.png" %}" alt="menu" class="icon-btn" id="opt-btn"></a>
+                            <a href="{% url "blog-archive" pk=blog.pk %}" class="archieve"><img src="{% static "images/archive.png" %}" alt="menu" class="icon-btn" id="opt-btn"></a>
                             <a href="{% url "blog-delete" pk=blog.pk %}" class="delete"><img src="{% static "images/bin.png" %}" alt="menu" class="icon-btn" id="opt-btn"></a>
                         </div>
                     </div>
@@ -562,21 +563,6 @@
                     error: function (xhr, status, error) {
                         console.log(error);
                     }
-                });
-            });
-            $('.like-button').click(function (e) {
-                e.preventDefault();
-                var blogId = $(this).data('blog-id');
-                $.ajax({
-                    type: 'GET',
-                    url: '{% url "blog-Like"%}',
-                    data: { blog_id: blogId},
-                    {% comment %} success: function (data) {
-                        alert('Blog liked!');
-                    },
-                    error: function (xhr, status, error) {
-                        alert('Error liking blog: ' + error);
-                    } {% endcomment %}
                 });
             });
         });

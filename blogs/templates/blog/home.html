@@ -239,7 +239,7 @@
 <body>
     <nav>
         <div class="left">
-            <img src="{% static "images/man.png" %}" alt="avatar" class="circle-avatar">
+            <a href="{% url 'profile' %}"><img src="{% static "images/man.png" %}" alt="avatar" class="circle-avatar"></a>
             <p class="user-title">{{ request.user.first_name }}</p>
         </div>
         <div class="right">
@@ -415,7 +415,7 @@
                         <div class="comment">
                             <div class="comment-head">
                                 <img src="{% static "images/man.png" %}" alt="profile" class="comment-profile-img">
-                                <h4 class="user-name">{{ request.user }}</h4>
+                                <h4 class="user-name">{{ request.user.first_name }}</h4>
                             </div>
                             <div class="comment-body">
                                 <div class="comment-text">${comment.val()}</div>
