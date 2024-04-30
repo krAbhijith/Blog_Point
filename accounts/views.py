@@ -3,10 +3,12 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import CreateView, RedirectView
+from django.views.generic import CreateView, RedirectView, ListView
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.mixins import LoginRequiredMixin
+from blogs.models import Blog, Comment
 
 class AccountRegisterView(CreateView):
     model = User
@@ -44,3 +46,17 @@ class AccountLogoutView(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         logout(self.request)
         return reverse_lazy(self.pattern_name)
+    
+class ProfileView(LoginRequiredMixin, ListView):
+    model = Blog
+    template_name = 'accounts/profile.html'
+    context_object_name = 'blogs'
+
+    ogin_url = 'register-account'
+    redirect_field_name = 'redirected_to'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        comments = Comment.objects.all()
+        context['comments_dict'] = comments  # Pass comments dictionary to the template
+        return context

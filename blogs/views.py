@@ -46,11 +46,14 @@ class Home(LoginRequiredMixin, ListView):
 #         return redirect('home')
 
 
-class BlogCreateView(CreateView):
+class BlogCreateView(LoginRequiredMixin, CreateView):
     model = Blog
     fields = ['title', 'desc']
     template_name = 'blog/blog.html'
     success_url = reverse_lazy('home')
+
+    login_url = 'register-account'
+    redirect_field_name = 'redirected_to'
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
@@ -79,41 +82,81 @@ class BlogCreateView(CreateView):
 #         return redirect('home')
 
 
-class BlogUpdateView(UpdateView):
+class BlogUpdateView(LoginRequiredMixin, UpdateView):
     model = Blog
     template_name = "blog/blog.html"
     fields = ['title', 'desc']
     success_url = reverse_lazy('home')
     #context_object_name = 'blog' default model name in lower case aayirikum
 
+    login_url = 'login-account'
+    redirect_field_name = 'redirected_to'
 
+    def get(self, request, *args, **kwargs):
+        # Store the referring URL in the session
+        self.request.session[self.redirect_field_name] = self.request.META.get('HTTP_REFERER')
+        return super().get(request, *args, **kwargs)
+    
+    def get_success_url(self, *args: Any, **kwargs: Any) -> str | None:
+        return self.request.session.pop(self.redirect_field_name, self.success_url)
 
-class BlogDeleteView(RedirectView):
-    query_string = False
-    pattern_name = 'home'
-
-    def get_redirect_url(self, *args, **kwargs):
-        pk = self.kwargs.get('pk')
-        blog = get_object_or_404(Blog, pk=pk)
-        blog.delete()
-        return reverse(self.pattern_name)
-
-
-
-class BlogArchiveView(RedirectView):
-    query_string = False
-    pattern_name = 'home'
-
-    def get_redirect_url(self, *args: Any, **kwargs: Any) -> str | None:
-        pk = self.kwargs.get('pk')
-        blog = get_object_or_404(Blog, pk=pk)
-        blog.is_archived = True
-        blog.save()
-        return reverse(self.pattern_name)
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(owner = self.request.user)
     
 
 
-class BlogLikeView(View):
+
+class BlogDeleteView(LoginRequiredMixin, RedirectView):
+    query_string = False
+    pattern_name = 'home'
+
+    login_url = 'login-account'
+    redirect_field_name = 'redirected_to'
+
+    def get(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        blog = get_object_or_404(Blog, pk=pk)
+        if blog.owner == self.request.user:
+            blog.delete()
+
+        # Store the referring URL in the session
+        self.request.session[self.redirect_field_name] = self.request.META.get('HTTP_REFERER')
+        return super().get(request, *args, **kwargs)
+    
+    def get_redirect_url(self, *args: Any, **kwargs: Any) -> str | None:
+        return self.request.session.pop(self.redirect_field_name, self.pattern_name)
+
+
+
+class BlogArchiveView(LoginRequiredMixin, RedirectView):
+    query_string = False
+    pattern_name = 'home'
+
+    login_url = 'login-account'
+    redirect_field_name = 'redirected_to'
+    
+    def get(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        blog = get_object_or_404(Blog, pk=pk)
+        if blog.owner == self.request.user:
+            blog.is_archived = not blog.is_archived
+            blog.save()
+
+        # Store the referring URL in the session
+        self.request.session[self.redirect_field_name] = self.request.META.get('HTTP_REFERER')
+        return super().get(request, *args, **kwargs)
+    
+    def get_redirect_url(self, *args: Any, **kwargs: Any) -> str | None:
+        return self.request.session.pop(self.redirect_field_name, self.pattern_name)
+    
+
+
+class BlogLikeView(LoginRequiredMixin, View):
+
+    login_url = 'login-account'
+    redirect_field_name = 'redirected_to'
+
     def get(self, request, **kwargs):
         pk = self.request.GET.get('blog_id')
         blog = get_object_or_404(Blog, pk=pk)
@@ -143,7 +186,10 @@ class BlogLikeView(View):
 
 
 
-class BlogCommentView(View):
+class BlogCommentView(LoginRequiredMixin, View):
+
+    login_url = 'login-account'
+    redirect_field_name = 'redirected_to'
 
     def post(self, request, **kwargs):
         pk = self.request.POST.get('blog_id')

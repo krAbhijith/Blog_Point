@@ -1,0 +1,588 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="Assets/favicon.png" type="image/x-icon">
+    <title>Blog Point</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        :root {
+            --primary: #F5F7F8;
+            --secondary: #F4CE14;
+            --tertiary: #495E57;
+            --darkest: #45474B;
+        }
+
+        body {
+            background-color: var(--primary);
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5rem;
+            background-color: var(--tertiary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        nav>.left {
+            display: flex;
+            margin-left: 6rem;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header>.left > a{
+            align-self: center;
+        }
+
+        .circle-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 28px;
+            align-self: center;
+        }
+
+        .user-title {
+            font-size: 24px;
+            margin-left: 12px;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        .nav-icon {
+            width: 32px;
+            margin-right: 4rem;
+        }
+
+        .menu{
+            position: absolute;
+            display: none;
+            right: 3rem;
+            bottom: -4rem;
+        }
+        .menu-item{
+            border: 1px solid var(--darkest);
+            padding: 4px 4px;
+            cursor: pointer;
+        }
+        .menu-item:hover{
+            background-color: var(--tertiary);
+            color: white;
+        }
+
+        section {
+            margin-top: 7rem;
+            padding-inline: 14rem;
+        }
+
+        .profile-section{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* border-bottom: 1px solid var(--darkest);
+            padding-bottom: 4rem;
+            margin-inline: 12rem; */
+        }
+
+        .tabs{
+            display: flex;
+            justify-content: space-around;
+        }
+        .tab{
+            background-color: var(--darkest);
+            color: var(--primary);
+            padding: 8px 12px;
+            align-self: center;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .active{
+            background-color: var(--tertiary);
+        }
+
+        .user-name-profile{
+            font-size: xx-large;
+            text-transform: capitalize;
+            margin-left: 4rem;
+            font-weight: 800;
+        }
+
+        .card,
+        .card-saved,
+        .card-archieved {
+            position: relative;
+            background: #f5d015a6;
+            padding: 24px;
+            padding-top: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        .card-saved,
+        .card-archieved{
+            display: none;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+        }
+
+        .card-header>.left {
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-img {
+            height: 32px;
+            margin-right: 12px;
+        }
+        .profile-img-lg {
+            height: 128px;
+            margin-right: 12px;
+        }
+
+        .card-title {
+            font: 24px bold;
+            margin: 8px 0px;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 12px;
+        }
+
+        .card-footer>.left>img {
+            margin-inline-end: 12px;
+        }
+
+        .icon-btn {
+            cursor: pointer;
+            padding-inline: 4px;
+        }
+
+        .comment-section {
+            display: flex;
+            flex-direction: column;
+            margin-top: 24px;
+            display: none;
+        }
+
+        .inp-comment {
+            width: 40%;
+            padding: 4px 8px;
+            background-color: #f5f7f8b0;
+            border: 1px solid var(--darkest);
+            border-radius: 2px;
+        }
+
+        .btn-comment {
+            background-color: var(--darkest);
+            color: var(--primary);
+            padding: 4px 8px;
+            border-radius: 2px;
+        }
+
+        .comment-head {
+            display: flex;
+            align-items: center;
+        }
+
+        .comment-box {
+            margin-inline: 12px;
+        }
+
+        .comment-profile-img {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+        }
+
+        .comment-body {
+            margin-inline: 12px;
+        }
+
+        .options {
+            position: absolute;
+            flex-direction: column;
+            top: 24px;
+            right: 48px;
+            padding: 2px;
+            display: none;
+        }
+
+        .options-item {
+            border: 1px solid var(--darkest);
+            padding: 4px;
+            border-radius: 4px;
+        }
+
+        .options-item:hover {
+            background-color: #bda010;
+        }
+
+        a {
+            text-decoration: none;
+            color: #000;
+        }
+
+        .show-options {
+            display: flex;
+            position: absolute;
+            flex-direction: column;
+            top: 24px;
+            right: 48px;
+            padding: 2px;
+        }
+
+        .show-comment{
+            display: block;
+            flex-direction: column;
+            margin-top: 24px;
+        }
+
+        .show-menu{
+            position: absolute;
+            display: block;
+            right: 3rem;
+            bottom: -4rem;
+        }
+
+        .user-name{
+            font-size: large;
+            text-transform: capitalize;
+        }
+
+        @media screen and (max-width: 800px) {
+            section {
+                padding: 0 3rem;
+            }
+
+            nav>.left {
+                margin-left: 2rem;
+            }
+
+            .nav-icon {
+                margin-right: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="left">
+            <a href="home.html"><img src="{% static "images/man.png" %}" alt="avatar" class="circle-avatar"></a>
+            <p class="user-title">{{ request.user.first_name }}</p>
+        </div>
+        <div class="right">
+            <a href="#"><img src="{% static "images/logout.png" %}" alt="add" class="nav-icon"></a>
+            <img src="{% static "images/dot-menu.png" %}" alt="add" class="nav-icon" id="menu-btn">
+        </div>
+        <div class="menu" id="menu">
+            <div class="menu-item">Change Password</div>
+            <div class="menu-item">Delete Account</div>
+        </div>
+    </nav>
+    
+    <section class="profile-section">
+        <img src="{% static "images/man.png" %}" class="profile-img-lg"></img>
+        <div class="user-name-profile">{{request.user.first_name}}</div>
+    </section>
+    <section class="tabs">
+        <div class="tab tab-blogs active" id="btn-blog">Blogs</div>
+        <div class="tab tab-saved " id="btn-saved">Saved</div>
+        <div class="tab tab-archieved" id="btn-archieved">Archived</div>
+    </section>
+
+
+    <section id="cards-div">
+        {% for blog in blogs %}
+            {% if blog.owner == request.user%}
+                <div class="{% if blog.is_archived == False %}card{% elif blog.is_archived == True %}card-archieved{% endif %}">
+                    <div class="card-header">
+                        <div class="left">
+                            <img src="{% static "images/man.png" %}" alt="profile" class="profile-img">
+                            <p class="user-name">{{ blog.owner.first_name }}</p>
+                        </div>
+                        <div class="right">
+                            <a href="{% url "blog-update" pk=blog.pk %}" class="edit"><img src="{% static "images/editing.png" %}" alt="menu" class="icon-btn" id="opt-btn"></a>
+                            <a href="{% url "blog-archive" pk=blog.pk %}" class="archive"><img src="{% static "images/archive.png" %}" alt="menu" class="icon-btn" id="opt-btn"></a>
+                            <a href="{% url "blog-delete" pk=blog.pk %}" class="delete"><img src="{% static "images/bin.png" %}" alt="menu" class="icon-btn" id="opt-btn"></a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-title">{{blog.title}}</div>
+                        <div class="card-desc">{{blog.desc}}</div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="left">
+                            <img src="{% static 'images/thumbs-up.png' %}" alt="like" class="icon-btn like-button" data-blog-id="{{ blog.pk }}">
+                            <img src="{% static "images/comment.png" %}" alt="comment" class="icon-btn comment-toggle" id="comment-btn">
+                        </div>
+                        <div>Posted on &nbsp; {{blog.date_posted}}</div>
+                    </div>
+                    <div class="comment-section" id="div-comment">
+                        <div class="commment-text comment-form" id="comment-form">
+                            <input type="text" name="comment" id="inp-comment-{{ blog.pk }}" class="inp-comment" >
+                            <button type="button" class="btn-comment btn-comment-post" data-blog-id="{{ blog.pk }}">Post</button>
+                        </div>
+                        <div class="comment-box" id="comment-box-{{ blog.pk }}">
+                            {% for comment in comments_dict %}
+                                {% if comment.blog.pk == blog.pk  %}
+                                    <div class="comment">
+                                        <div class="comment-head">
+                                            <img src="{% static "images/man.png" %}" alt="profile" class="comment-profile-img">
+                                            <h4 class="user-name">{{ comment.user.first_name }}</h4>
+                                        </div>
+                                        <div class="comment-body">
+                                            <div class="comment-text">{{ comment.comment }}</div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        {% comment %} <div class="card-archieved">
+            <div class="card-header">
+                <div class="left">
+                    <img src="Assets/man.png" alt="profile" class="profile-img">
+                    <p class="user-name">Abhijith</p>
+                </div>
+                <div class="right">
+                    <a href="{% url "blog-update" pk=blog.pk %}" class="edit"><img src="{% static "images/editing.png" %}" alt="menu" class="icon-btn" id="opt-btn"></a>
+                    <a href="{% url "blog-archive" pk=blog.pk %}" class="archive"><img src="{% static "images/archive.png" %}" alt="menu" class="icon-btn" id="opt-btn"></a>
+                    <a href="{% url "blog-delete" pk=blog.pk %}" class="delete"><img src="{% static "images/bin.png" %}" alt="menu" class="icon-btn" id="opt-btn"></a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="card-title">This is a Sample Post</div>
+                <div class="card-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur quibusdam
+                    distinctio ratione eos vitae sapiente dolor natus, quis quo hic! Reprehenderit quaerat repellendus
+                    corrupti et dolor. Optio accusamus distinctio magni.
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="left">
+                    <img src="Assets/thumbs-up.png" alt="like" class="icon-btn">
+                    <img src="Assets/comment.png" alt="comment" class="icon-btn comment-toggle" id="comment-btn">
+                </div>
+                <div>Posted on 02/12/2003</div>
+            </div>
+            <div class="comment-section" id="div-comment">
+                <div class="commment-text">
+                    <input type="text" name="inp-comment" id="inp-comment" class="inp-comment">
+                    <a href="#" class="btn-comment">Post</a>
+                </div>
+                <div class="comment-box">
+                    <div class="comment">
+                        <div class="comment-head">
+                            <img src="Assets/man.png" alt="profile" class="comment-profile-img">
+                            <h4 class="user-name">Abhijith</h4>
+                        </div>
+                        <div class="comment-body">
+                            <div class="comment-text">This is a sample comment</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="card-saved">
+            <div class="card-header">
+                <div class="left">
+                    <img src="Assets/man.png" alt="profile" class="profile-img">
+                    <p class="user-name">Abhijith</p>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="card-title">This is a Sample Post</div>
+                <div class="card-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur quibusdam
+                    distinctio ratione eos vitae sapiente dolor natus, quis quo hic! Reprehenderit quaerat repellendus
+                    corrupti et dolor. Optio accusamus distinctio magni.
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="left">
+                    <img src="Assets/thumbs-up.png" alt="like" class="icon-btn">
+                    <img src="Assets/comment.png" alt="comment" class="icon-btn comment-toggle" id="comment-btn">
+                </div>
+                <div>Posted on 02/12/2003</div>
+            </div>
+            <div class="comment-section" id="div-comment">
+                <div class="commment-text">
+                    <input type="text" name="inp-comment" id="inp-comment" class="inp-comment">
+                    <a href="#" class="btn-comment">Post</a>
+                </div>
+                <div class="comment-box">
+                    <div class="comment">
+                        <div class="comment-head">
+                            <img src="Assets/man.png" alt="profile" class="comment-profile-img">
+                            <h4 class="user-name">Abhijith</h4>
+                        </div>
+                        <div class="comment-body">
+                            <div class="comment-text">This is a sample comment</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="options" id="div-options">
+                <a href="#" class="edit options-item">Edit</a>
+                <a href="#" class="archive options-item">Archive</a>
+                <a href="#" class="delete options-item">Delete</a>
+            </div>
+        </div> {% endcomment %}
+
+
+    </section>
+    <script>
+        var blogsBtn = document.getElementById('btn-blog')
+        var savedBtn = document.getElementById('btn-saved')
+        var archievedBtn = document.getElementById('btn-archieved')
+        var blogCards = document.querySelectorAll('.card')
+        var savedCards = document.querySelectorAll('.card-saved')
+        var archievedCards = document.querySelectorAll('.card-archieved')
+
+        var commentBtns = document.querySelectorAll('.comment-toggle')
+        var menuBtn = document.getElementById('menu-btn')
+        var menu = document.getElementById('menu')
+        var commentBoxes = document.querySelectorAll('.comment-section')
+
+
+        commentBtns.forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                commentBoxes[index].classList.toggle('show-comment');
+            })
+        })
+
+
+        menuBtn.addEventListener('click', ()=>{
+            menu.classList.toggle('show-menu')
+        })
+
+        savedBtn.addEventListener('click', ()=>{
+            blogsBtn.classList.remove('active')
+            archievedBtn.classList.remove('active')
+            savedBtn.classList.add('active')
+            toggleView(savedBtn, savedCards,blogCards, archievedCards)
+        })
+        blogsBtn.addEventListener('click', ()=>{
+            savedBtn.classList.remove('active')
+            archievedBtn.classList.remove('active')
+            blogsBtn.classList.add('active')
+            toggleView(blogsBtn, blogCards,savedCards, archievedCards)
+        })
+        archievedBtn.addEventListener('click', ()=>{
+            savedBtn.classList.remove('active')
+            blogsBtn.classList.remove('active')
+            archievedBtn.classList.add('active')
+            toggleView(archievedBtn, archievedCards,blogCards, savedCards)
+        })
+
+        function toggleView(btnElement, cardsList1, cardsList2, cardsList3) {
+            if (btnElement.classList.contains('active')) {
+            cardsList1.forEach((card)=>{
+                card.style.display = 'block'
+            })
+            cardsList2.forEach((card)=>{
+                card.style.display = 'none'
+            })
+            cardsList3.forEach((card)=>{
+                card.style.display = 'none'
+            })
+        }
+        }
+
+        $(document).ready(function () {
+            $('.like-button').click(function (e) {
+                e.preventDefault();
+                var blogId = $(this).data('blog-id');
+                $.ajax({
+                    type: 'GET',
+                    url: '{% url "blog-Like"%}',
+                    data: { blog_id: blogId},
+                    {% comment %} success: function (data) {
+                        alert('Blog liked!');
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Error liking blog: ' + error);
+                    } {% endcomment %}
+                });
+            });
+            $('.btn-comment-post').click(function (e) {
+                e.preventDefault();
+                var blogId = $(this).data('blog-id')
+                var comment = $('#inp-comment-' + blogId)
+                var commentBox = $('#comment-box-' + blogId)
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "blog-comment" %}',
+                    data:{
+                        blog_id: blogId,
+                        comment_text: comment.val(),
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    success: function () {
+                        HTML = `
+                        <div class="comment">
+                            <div class="comment-head">
+                                <img src="{% static "images/man.png" %}" alt="profile" class="comment-profile-img">
+                                <h4 class="user-name">{{ request.user.first_name }}</h4>
+                            </div>
+                            <div class="comment-body">
+                                <div class="comment-text">${comment.val()}</div>
+                            </div>
+                        </div>
+                        `
+                        commentBox.append(HTML);
+                        comment.val('');
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+            });
+            $('.like-button').click(function (e) {
+                e.preventDefault();
+                var blogId = $(this).data('blog-id');
+                $.ajax({
+                    type: 'GET',
+                    url: '{% url "blog-Like"%}',
+                    data: { blog_id: blogId},
+                    {% comment %} success: function (data) {
+                        alert('Blog liked!');
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Error liking blog: ' + error);
+                    } {% endcomment %}
+                });
+            });
+        });
+
+        
+    </script>
+</body>
+
+</html>
