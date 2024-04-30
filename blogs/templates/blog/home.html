@@ -249,7 +249,7 @@
     <nav>
         <div class="left">
             <img src="{% static "images/man.png" %}" alt="avatar" class="circle-avatar">
-            <p class="user-title">Abhijith</p>
+            <p class="user-title">{{ request.user }}</p>
         </div>
         <div class="right">
             <a href="{% url 'blog-create' %}"><img src="{% static 'images/add.png' %}" alt="add" class="nav-icon"></a>

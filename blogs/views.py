@@ -1,13 +1,13 @@
 from datetime import date
 from typing import Any
-from django.forms import BaseModelForm
-from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import ListView, RedirectView, CreateView
 from .models import Blog, Like, Comment
+
+
 
 class Home(ListView):
     model : Blog
@@ -67,6 +67,8 @@ class BlogUpdateView(View):
         blog.save()
         return redirect('home')
 
+
+
 class BlogDeleteView(RedirectView):
     query_string = False
     pattern_name = 'home'
@@ -78,11 +80,6 @@ class BlogDeleteView(RedirectView):
         return reverse(self.pattern_name)
 
 
-    # def get(self, request, **kwargs):
-    #     pk = self.kwargs.get('pk')
-    #     blog = get_object_or_404(Blog, pk=pk)
-    #     blog.delete()
-    #     return redirect('home')
 
 class BlogArchiveView(RedirectView):
     query_string = False
@@ -95,6 +92,8 @@ class BlogArchiveView(RedirectView):
         blog.save()
         return reverse(self.pattern_name)
     
+
+
 class BlogLikeView(View):
     def get(self, request, **kwargs):
         pk = self.request.GET.get('blog_id')
@@ -107,24 +106,6 @@ class BlogLikeView(View):
             Like.objects.create(date_liked = today, user = user, blog = blog)
         return redirect('home')
 
-
-# class BlogLikeView(CreateView):
-#     model = Like
-#     fields = []
-
-#     def form_valid(self, form):
-#         blog_id = self.request.POST.get('blog_id')
-#         blog = get_object_or_404(Blog, pk=blog_id)
-#         user = self.request.user
-#         if(Like.objects.filter(blog=blog, user=user)):
-#             Like.objects.filter(blog=blog, user=user).delete()
-#         else:
-#             form.instance.blog = blog
-#             form.instance.user = self.request.user
-#             form.instance.date_liked = date.today()
-#         return super().form_valid(form)
-#     def get_success_url(self) -> str:
-#         return reverse('home')
 
 class BlogComment(View):
 
