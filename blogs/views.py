@@ -1,5 +1,6 @@
 from datetime import date
 from typing import Any
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -115,12 +116,29 @@ class BlogLikeView(View):
         return redirect('home')
 
 
-class BlogComment(View):
+
+# class BlogCommentView(CreateView):
+#     model = Comment
+#     fields = ['comment']
+#     success_url = reverse_lazy('home')
+#     template_name = 'blog/home.html'
+
+#     def form_valid(self, form):
+#         print('hello')
+#         form.instance.date_commented = date.today()
+#         form.instance.user = self.request.user
+#         form.instance.blog = get_object_or_404(Blog, pk=1)
+#         return super().form_valid(form)
+        
+
+
+
+class BlogCommentView(View):
 
     def post(self, request, **kwargs):
-        pk = self.kwargs.get('pk')
+        pk = self.request.POST.get('blog_id')
         blog = get_object_or_404(Blog, pk=pk)
-        comment = request.POST.get('inp-comment')
+        comment = request.POST.get('comment_text')
         today = date.today()
         Comment.objects.create(comment=comment, date_commented=today, user=request.user, blog=blog)
         return redirect('home')

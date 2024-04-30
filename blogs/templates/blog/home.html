@@ -296,26 +296,19 @@
             <div class="card-footer">
                 <div class="left">
                     <img src="{% static 'images/thumbs-up.png' %}" alt="like" class="icon-btn like-button" data-blog-id="{{ blog.pk }}">
-                    <img src="{% static "images/comment.png" %}" alt="comment" class="icon-btn comment-toggle"
-                        id="comment-btn">
+                    <img src="{% static "images/comment.png" %}" alt="comment" class="icon-btn comment-toggle" id="comment-btn">
                 </div>
                 <div>Posted on &nbsp; {{blog.date_posted}}</div>
             </div>
             <div class="comment-section" id="div-comment">
-                <form class="commment-text">
-                    <input type="text" name="inp-comment" id="inp-comment" class="inp-comment">
-                    <button type="submit" class="btn-comment">Post</button>
-                </form>
-                <div class="comment-box">
-                    <div class="comment">
-                        <div class="comment-head">
-                            <img src="{% static "images/man.png" %}" alt="profile" class="comment-profile-img">
-                            <h4 class="user-name">Abhijith</h4>
-                        </div>
-                        <div class="comment-body">
-                            <div class="comment-text">This is a sample comment</div>
-                        </div>
-                    </div>
+                <div class="commment-text comment-form" id="comment-form">
+                    <input type="text" name="comment" id="inp-comment-{{ blog.pk }}" class="inp-comment" >
+                    <button type="button" class="btn-comment btn-comment-post" data-blog-id="{{ blog.pk }}">Post</button>
+                </div>
+                <div class="comment-box" id="comment-box-{{ blog.pk }}">
+                    {% for  in  %}
+                    
+                    {% endfor %}
                 </div>
             </div>
             <div class="options" id="div-options">
@@ -367,6 +360,39 @@
                     error: function (xhr, status, error) {
                         alert('Error liking blog: ' + error);
                     } {% endcomment %}
+                });
+            });
+            $('.btn-comment-post').click(function (e) {
+                e.preventDefault();
+                var blogId = $(this).data('blog-id')
+                var comment = $('#inp-comment-' + blogId)
+                var commentBox = $('#comment-box-' + blogId)
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "blog-comment" %}',
+                    data:{
+                        blog_id: blogId,
+                        comment_text: comment.val(),
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    success: function () {
+                        HTML = `
+                        <div class="comment">
+                            <div class="comment-head">
+                                <img src="{% static "images/man.png" %}" alt="profile" class="comment-profile-img">
+                                <h4 class="user-name">{{ request.user }}</h4>
+                            </div>
+                            <div class="comment-body">
+                                <div class="comment-text">${comment.val()}</div>
+                            </div>
+                        </div>
+                        `
+                        commentBox.append(HTML);
+                        comment.val('');
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(error);
+                    }
                 });
             });
         });

@@ -9,7 +9,7 @@ class Blog(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE) 
 
     def __str__(self):
-        return self.name
+        return self.title
     
 
 class Comment(models.Model):
@@ -17,6 +17,10 @@ class Comment(models.Model):
     date_commented = models.DateField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     blog = models.ForeignKey(Blog, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.blog.title
+    
 
 class Like(models.Model):
     date_liked = models.DateField()
