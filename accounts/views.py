@@ -52,7 +52,7 @@ class ProfileView(LoginRequiredMixin, ListView):
     template_name = 'accounts/profile.html'
     context_object_name = 'blogs'
 
-    ogin_url = 'register-account'
+    login_url = 'register-account'
     redirect_field_name = 'redirected_to'
 
     def get_context_data(self, **kwargs):

@@ -323,7 +323,7 @@
                             <p class="user-name">{{ blog.owner.first_name }}</p>
                         </div>
                         <div class="right">
-                            <img src="{% static "images/bookmark.png" %}" alt="menu" class="icon-btn" id="opt-btn">
+                            <a href="{% url "blog-save" pk=blog.pk %}"><img src="{% static "images/bookmark.png" %}" alt="menu" class="icon-btn" id="opt-btn"></a>
                         </div>
                     </div>
                     <div class="card-body">

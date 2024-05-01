@@ -1,13 +1,14 @@
 from datetime import date
 from typing import Any
-from django.http import JsonResponse
+from django.http import HttpRequest, JsonResponse
+from django.http.response import HttpResponse as HttpResponse
 from django.shortcuts import redirect, render
 from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import ListView, RedirectView, CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Blog, Like, Comment
+from .models import Blog, Like, Comment, Saved
 
 
 
@@ -150,7 +151,22 @@ class BlogArchiveView(LoginRequiredMixin, RedirectView):
     def get_redirect_url(self, *args: Any, **kwargs: Any) -> str | None:
         return self.request.session.pop(self.redirect_field_name, self.pattern_name)
     
+class BlogSaveView(LoginRequiredMixin, View):
 
+    login_url = 'login-account'
+    redirect_field_name = 'redirected_to'
+
+    def get(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        blog = get_object_or_404(Blog, pk=pk)
+        user = self.request.user
+        saved = Saved.objects.filter(blog=blog, user=user)
+        if (saved):
+            print('here')
+            Saved.objects.get(blog=blog, user=user).delete()
+        else:
+            Saved.objects.create(blog=blog, user=user)
+        return redirect('home')
 
 class BlogLikeView(LoginRequiredMixin, View):
 
