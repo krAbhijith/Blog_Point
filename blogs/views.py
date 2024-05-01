@@ -29,22 +29,6 @@ class Home(LoginRequiredMixin, ListView):
         context['comments_dict'] = comments  # Pass comments dictionary to the template
         return context
     
-# class BlogCreateView(View):
-#     model = Blog
-#     context_object_name = 'blog'
-#     template_name = 'blog/blog.html'
-
-#     def get(self, request):
-#         return render(request, self.template_name)
-    
-#     def post(self, request):
-#         title = request.POST.get('title')
-#         desc = request.POST.get('desc')
-#         user = request.user
-#         today = date.today()
-#         #print(title, desc, user, today)
-#         Blog.objects.create(title=title, desc=desc, owner=user, date_posted=today)
-#         return redirect('home')
 
 
 class BlogCreateView(LoginRequiredMixin, CreateView):
@@ -60,27 +44,6 @@ class BlogCreateView(LoginRequiredMixin, CreateView):
         form.instance.owner = self.request.user
         form.instance.date_posted = date.today()
         return super().form_valid(form)    
-    
-
-# class BlogUpdateView(View):
-    
-#     def get_queryset(self):
-#         pk = self.kwargs.get('pk')
-#         blog = get_object_or_404(Blog, pk=pk)
-#         return blog
-    
-#     def get(self, request, **kwargs):
-#         context = self.get_queryset()
-#         return render(request, 'blog/blog.html', {'blog' : context})
-    
-#     def post(self, request, **kwargs):
-#         blog = self.get_queryset()
-#         title = request.POST.get('title')
-#         desc = request.POST.get('desc')
-#         blog.title = title
-#         blog.desc = desc
-#         blog.save()
-#         return redirect('home')
 
 
 class BlogUpdateView(LoginRequiredMixin, UpdateView):
@@ -93,12 +56,12 @@ class BlogUpdateView(LoginRequiredMixin, UpdateView):
     login_url = 'login-account'
     redirect_field_name = 'redirected_to'
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, **kwargs):
         # Store the referring URL in the session
         self.request.session[self.redirect_field_name] = self.request.META.get('HTTP_REFERER')
-        return super().get(request, *args, **kwargs)
+        return super().get(request, **kwargs)
     
-    def get_success_url(self, *args: Any, **kwargs: Any) -> str | None:
+    def get_success_url(self, **kwargs: Any) -> str | None:
         return self.request.session.pop(self.redirect_field_name, self.success_url)
 
     def get_queryset(self):
@@ -150,19 +113,19 @@ class BlogArchiveView(LoginRequiredMixin, RedirectView):
     
     def get_redirect_url(self, *args: Any, **kwargs: Any) -> str | None:
         return self.request.session.pop(self.redirect_field_name, self.pattern_name)
-    
+
+
 class BlogSaveView(LoginRequiredMixin, View):
 
     login_url = 'login-account'
     redirect_field_name = 'redirected_to'
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, **kwargs):
         pk = self.kwargs.get('pk')
         blog = get_object_or_404(Blog, pk=pk)
         user = self.request.user
         saved = Saved.objects.filter(blog=blog, user=user)
         if (saved):
-            print('here')
             Saved.objects.get(blog=blog, user=user).delete()
         else:
             Saved.objects.create(blog=blog, user=user)
@@ -184,6 +147,19 @@ class BlogLikeView(LoginRequiredMixin, View):
             Like.objects.create(date_liked = today, user = user, blog = blog)
         return redirect('home')
 
+class BlogCommentView(LoginRequiredMixin, View):
+
+    login_url = 'login-account'
+    redirect_field_name = 'redirected_to'
+
+    def post(self, request, **kwargs):
+        pk = self.request.POST.get('blog_id')
+        blog = get_object_or_404(Blog, pk=pk)
+        comment = request.POST.get('comment_text')
+        today = date.today()
+        Comment.objects.create(comment=comment, date_commented=today, user=request.user, blog=blog)
+        return redirect('home')
+    
 
 
 # class BlogCommentView(CreateView):
@@ -200,19 +176,41 @@ class BlogLikeView(LoginRequiredMixin, View):
 #         return super().form_valid(form)
         
 
-
-
-class BlogCommentView(LoginRequiredMixin, View):
-
-    login_url = 'login-account'
-    redirect_field_name = 'redirected_to'
-
-    def post(self, request, **kwargs):
-        pk = self.request.POST.get('blog_id')
-        blog = get_object_or_404(Blog, pk=pk)
-        comment = request.POST.get('comment_text')
-        today = date.today()
-        Comment.objects.create(comment=comment, date_commented=today, user=request.user, blog=blog)
-        return redirect('home')
-
     
+# class BlogUpdateView(View):
+    
+#     def get_queryset(self):
+#         pk = self.kwargs.get('pk')
+#         blog = get_object_or_404(Blog, pk=pk)
+#         return blog
+    
+#     def get(self, request, **kwargs):
+#         context = self.get_queryset()
+#         return render(request, 'blog/blog.html', {'blog' : context})
+    
+#     def post(self, request, **kwargs):
+#         blog = self.get_queryset()
+#         title = request.POST.get('title')
+#         desc = request.POST.get('desc')
+#         blog.title = title
+#         blog.desc = desc
+#         blog.save()
+#         return redirect('home')
+
+
+# class BlogCreateView(View):
+#     model = Blog
+#     context_object_name = 'blog'
+#     template_name = 'blog/blog.html'
+
+#     def get(self, request):
+#         return render(request, self.template_name)
+    
+#     def post(self, request):
+#         title = request.POST.get('title')
+#         desc = request.POST.get('desc')
+#         user = request.user
+#         today = date.today()
+#         #print(title, desc, user, today)
+#         Blog.objects.create(title=title, desc=desc, owner=user, date_posted=today)
+#         return redirect('home')
