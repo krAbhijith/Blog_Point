@@ -8,7 +8,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.mixins import LoginRequiredMixin
-from blogs.models import Blog, Comment
+from blogs.models import Blog, Comment, Saved
 
 class AccountRegisterView(CreateView):
     model = User
@@ -58,5 +58,7 @@ class ProfileView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         comments = Comment.objects.all()
+        saved_blogs = Saved.objects.filter(user = self.request.user)
         context['comments_dict'] = comments  # Pass comments dictionary to the template
+        context['saved_blogs'] = saved_blogs
         return context

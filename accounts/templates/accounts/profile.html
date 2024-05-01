@@ -364,6 +364,49 @@
             {% endif %}
         {% endfor %}
 
+        {% for saved in saved_blogs %}
+            <div class="card-saved">
+                <div class="card-header">
+                    <div class="left">
+                        <img src="{% static "images/man.png" %}" alt="profile" class="profile-img">
+                        <p class="user-name">{{ saved.blog.owner.first_name }}</p>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">{{saved.blog.title}}</div>
+                    <div class="card-desc">{{saved.blog.desc}}</div>
+                </div>
+                <div class="card-footer">
+                    <div class="left">
+                        <img src="{% static 'images/thumbs-up.png' %}" alt="like" class="icon-btn like-button" data-blog-id="{{ blog.pk }}">
+                        <img src="{% static "images/comment.png" %}" alt="comment" class="icon-btn comment-toggle" id="comment-btn">
+                    </div>
+                    <div>Posted on &nbsp; {{saved.blog.date_posted}}</div>
+                </div>
+                <div class="comment-section" id="div-comment">
+                    <div class="commment-text comment-form" id="comment-form">
+                        <input type="text" name="comment" id="inp-comment-{{ saved.blog.pk }}" class="inp-comment" >
+                        <button type="button" class="btn-comment btn-comment-post" data-blog-id="{{ saved.blog.pk }}">Post</button>
+                    </div>
+                    <div class="comment-box" id="comment-box-{{ saved.blog.pk }}">
+                        {% for comment in comments_dict %}
+                            {% if comment.blog.pk == saved.blog.pk  %}
+                                <div class="comment">
+                                    <div class="comment-head">
+                                        <img src="{% static "images/man.png" %}" alt="profile" class="comment-profile-img">
+                                        <h4 class="user-name">{{ comment.user.first_name }}</h4>
+                                    </div>
+                                    <div class="comment-body">
+                                        <div class="comment-text">{{ comment.comment }}</div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
         {% comment %} <div class="card-archieved">
             <div class="card-header">
                 <div class="left">
@@ -411,50 +454,7 @@
 
 
 
-        <div class="card-saved">
-            <div class="card-header">
-                <div class="left">
-                    <img src="Assets/man.png" alt="profile" class="profile-img">
-                    <p class="user-name">Abhijith</p>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="card-title">This is a Sample Post</div>
-                <div class="card-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur quibusdam
-                    distinctio ratione eos vitae sapiente dolor natus, quis quo hic! Reprehenderit quaerat repellendus
-                    corrupti et dolor. Optio accusamus distinctio magni.
-                </div>
-            </div>
-            <div class="card-footer">
-                <div class="left">
-                    <img src="Assets/thumbs-up.png" alt="like" class="icon-btn">
-                    <img src="Assets/comment.png" alt="comment" class="icon-btn comment-toggle" id="comment-btn">
-                </div>
-                <div>Posted on 02/12/2003</div>
-            </div>
-            <div class="comment-section" id="div-comment">
-                <div class="commment-text">
-                    <input type="text" name="inp-comment" id="inp-comment" class="inp-comment">
-                    <a href="#" class="btn-comment">Post</a>
-                </div>
-                <div class="comment-box">
-                    <div class="comment">
-                        <div class="comment-head">
-                            <img src="Assets/man.png" alt="profile" class="comment-profile-img">
-                            <h4 class="user-name">Abhijith</h4>
-                        </div>
-                        <div class="comment-body">
-                            <div class="comment-text">This is a sample comment</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="options" id="div-options">
-                <a href="#" class="edit options-item">Edit</a>
-                <a href="#" class="archive options-item">Archive</a>
-                <a href="#" class="delete options-item">Delete</a>
-            </div>
-        </div> {% endcomment %}
+         {% endcomment %}
 
 
     </section>
